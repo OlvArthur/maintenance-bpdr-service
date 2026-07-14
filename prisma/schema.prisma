@@ -1,0 +1,121 @@
+// maintenance-service — Prisma schema
+// Owns its own database, separate from the gateway's.
+// This service trusts x-user-id / x-user-role headers forwarded by the
+// gateway — it does not store credentials or validate tokens itself.
+
+generator client {
+  provider = "prisma-client"
+  output   = "./client"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum MachineStatus {
+  OPERATIONAL
+  UNDER_MAINTENANCE
+  DECOMMISSIONED
+}
+
+enum MaintenanceType {
+  PREVENTIVE
+  CORRECTIVE
+  INSPECTION
+}
+
+enum MaintenanceLogStatus {
+  OPEN
+  COMPLETED
+}
+
+model Machine {
+  id           Int           @id @default(autoincrement())
+  qrCode       String        @unique @map("qr_code")
+  name         String
+  type         String
+  location     String
+  serialNumber String        @unique @map("serial_number")
+  status       MachineStatus @default(OPERATIONAL)
+
+  logs         MaintenanceLog[]
+
+  createdAt    DateTime      @default(now()) @map("created_at")
+  updatedAt    DateTime      @updatedAt @map("updated_at")
+
+  @@map("machines")
+}
+
+model MaintenanceLog {
+  id            Int                   @id @default(autoincrement())
+  machineId     Int                   @map("machine_id")
+  machine       Machine               @relation(fields: [machineId], references: [id])
+
+  // Not a FK — the User table lives in the gateway's separate database.
+  // This service only ever receives a trusted user id via header, never
+  // the user record itself.
+  technicianId  Int                   @map("technician_id")
+
+  type          MaintenanceType
+  description   String
+  status        MaintenanceLogStatus  @default(OPEN)
+
+  partsUsed     PartUsage[]
+  photos        Photo[]
+
+  startedAt     DateTime              @default(now()) @map("started_at")
+  completedAt   DateTime?             @map("completed_at")
+
+  createdAt     DateTime              @default(now()) @map("created_at")
+  updatedAt     DateTime              @updatedAt @map("updated_at")
+
+  @@index([machineId])
+  @@index([technicianId])
+  @@map("maintenance_logs")
+}
+
+model Photo {
+  id               Int             @id @default(autoincrement())
+  maintenanceLogId Int             @map("maintenance_log_id")
+  maintenanceLog   MaintenanceLog  @relation(fields: [maintenanceLogId], references: [id])
+  url              String
+  createdAt        DateTime        @default(now()) @map("created_at")
+
+  @@map("photos")
+}
+
+model Part {
+  id               Int          @id @default(autoincrement())
+  sku              String       @unique
+  name             String
+  quantityOnHand   Int          @default(0) @map("quantity_on_hand")
+  minThreshold     Int          @default(0) @map("min_threshold")
+  unit             String       // e.g. "unit", "liter", "meter"
+  location         String       // shelf/bin reference
+
+  usages           PartUsage[]
+
+  createdAt        DateTime     @default(now()) @map("created_at")
+  updatedAt        DateTime     @updatedAt @map("updated_at")
+
+  @@map("parts")
+}
+
+// Join table between MaintenanceLog and Part. This is what makes the
+// inventory real: every row here is one "N units of this part were
+// consumed on this job", and is what drives quantityOnHand decrements
+// and later analytics (which machine eats the most parts, etc).
+model PartUsage {
+  id               Int             @id @default(autoincrement())
+  maintenanceLogId Int             @map("maintenance_log_id")
+  maintenanceLog   MaintenanceLog  @relation(fields: [maintenanceLogId], references: [id])
+  partId           Int             @map("part_id")
+  part             Part            @relation(fields: [partId], references: [id])
+  quantityUsed     Int             @map("quantity_used")
+
+  createdAt        DateTime        @default(now()) @map("created_at")
+
+  @@index([maintenanceLogId])
+  @@index([partId])
+  @@map("part_usages")
+}
