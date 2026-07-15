@@ -2,6 +2,7 @@ import express, { Request, Response, NextFunction } from 'express'
 import cors from 'cors'
 import { CelebrateError } from 'celebrate'
 
+import router from '@shared/infra/express/router'
 import { AppError } from '@shared/errors'
 import { StatusCode } from '@shared/commons'
 
@@ -11,7 +12,7 @@ const PORT = process.env.PORT ?? 5000
 
 app.use(cors())
 app.use(express.json())
-
+app.use(router)
 
 app.use((err: Error, _: Request, response: Response, __: NextFunction) => {
   console.log(err)
