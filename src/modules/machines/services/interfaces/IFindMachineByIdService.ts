@@ -1,5 +1,5 @@
 import { MachineEntity } from '@modules/machines/entities/Machine'
 
-export interface IFindOneMachineService {
+export interface IFindMachineByIdService {
     execute(id: number): Promise<MachineEntity>
 }

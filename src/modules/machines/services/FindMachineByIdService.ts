@@ -1,11 +1,11 @@
-import { IFindOneMachineService } from '@modules/machines/services/interfaces/IFindOneMachineService'
+import { IFindMachineByIdService } from '@modules/machines/services/interfaces/IFindMachineByIdService'
 import { IFindOneMachineRepository } from '@modules/machines/repositories'
 import { MachineEntity } from '@modules/machines/entities/Machine'
 
 import { AppError } from '@shared/errors'
 import { StatusCode } from '@shared/commons'
 
-export class FindOneMachineService implements IFindOneMachineService {
+export class FindMachineByIdService implements IFindMachineByIdService {
     constructor(
         private machinesRepository: IFindOneMachineRepository
     ) {}

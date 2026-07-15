@@ -1,9 +1,9 @@
 import { FindOneMachineController } from "@modules/machines/infra/express/controllers/FindOneMachineController"
-import { FindOneMachineService } from "@modules/machines/services/FindOneMachineService"
+import { FindMachineByIdService } from "@modules/machines/services/FindMachineByIdService"
 import { MachinesRepository } from "../infra/prisma/repositories/MachinesRepository"
 
 export const findOneMachineFactory = () => {
     const repository = new MachinesRepository()
-    const service = new FindOneMachineService(repository)
+    const service = new FindMachineByIdService(repository)
     return new FindOneMachineController(service)
 } 
