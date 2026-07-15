@@ -1,2 +1,3 @@
 export * from './CreateMachineFactory'
-export * from './FindOneMachineFactory'
+export * from './FindMachineByIdFactory'
+export * from './FindMachineByQrCodeFactory'

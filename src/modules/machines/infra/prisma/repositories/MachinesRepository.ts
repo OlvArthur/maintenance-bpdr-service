@@ -1,3 +1,5 @@
+import { UUID } from "node:crypto"
+
 import { MachineEntity } from "@modules/machines/entities/Machine"
 import { IFindOneMachineRepository, ICreateMachineRepository, ICreateMachineRequestDTO } from "@modules/machines/repositories"
 import { Context, prisma as prismaClient } from "@shared/infra/prisma/ClientInstance"
@@ -27,6 +29,18 @@ export class MachinesRepository implements IFindOneMachineRepository, ICreateMac
     const foundMachine = await prisma.machine.findUnique({
       where: {
         id
+      }
+    })
+
+    return foundMachine
+  }
+
+  async findByQrCode(qrCode: UUID): Promise<MachineEntity | null> {
+    const { prisma } = this.prismaContext
+
+    const foundMachine = await prisma.machine.findUnique({
+      where: {
+        qrCode: String(qrCode)
       }
     })
 

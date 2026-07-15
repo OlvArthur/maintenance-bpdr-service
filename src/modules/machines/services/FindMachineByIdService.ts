@@ -6,12 +6,10 @@ import { AppError } from '@shared/errors'
 import { StatusCode } from '@shared/commons'
 
 export class FindMachineByIdService implements IFindMachineByIdService {
-    constructor(
-        private machinesRepository: IFindOneMachineRepository
-    ) {}
+    constructor(private machinesRepository: IFindOneMachineRepository) {}
 
     async execute(id: number): Promise<MachineEntity> {
-        if(!id) throw new AppError('Find One Machine Service: Missing Id')
+        if(!id) throw new AppError('Find One Machine By Id Service: Missing Id')
 
         const foundMachine = await this.machinesRepository.findById(id)
 
