@@ -21,6 +21,18 @@ export class MachinesRepository implements IFindOneMachineRepository, ICreateMac
     return foundMachine
   }
 
+  async findById(id: number): Promise<MachineEntity | null> {
+    const { prisma } = this.prismaContext
+
+    const foundMachine = await prisma.machine.findUnique({
+      where: {
+        id
+      }
+    })
+
+    return foundMachine
+  }
+
   async create(data: ICreateMachineRequestDTO): Promise<MachineEntity> {
     const { prisma } = this.prismaContext
     const { qrCode, name, type, location, serialNumber } = data

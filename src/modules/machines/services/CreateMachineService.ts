@@ -12,14 +12,14 @@ export class CreateMachineService implements ICreateMachineService {
   ) {}
 
   async execute({ name, type, location, serialNumber }: ICreateMachineRequest): Promise<MachineEntity> {
-    if(!name) throw new AppError('Create Machine Error: Missing name')
-    if(!type) throw new AppError('Create Machine Error: Missing type')
-    if(!location) throw new AppError('Create Machine Error: Missing location')
-    if(!serialNumber) throw new AppError('Create Machine Error: Missing serialNumber')
+    if(!name) throw new AppError('Create Machine Service: Missing name')
+    if(!type) throw new AppError('Create Machine Service: Missing type')
+    if(!location) throw new AppError('Create Machine Service: Missing location')
+    if(!serialNumber) throw new AppError('Create Machine Service: Missing serialNumber')
 
     const alreadyExistentMachine = await this.machinesRepository.findBySerialNumber(serialNumber)
 
-    if(alreadyExistentMachine) throw new AppError('Create Machine Error: Serial number already registered')
+    if(alreadyExistentMachine) throw new AppError('Create Machine Service: Serial number already registered')
 
     // qrCode is generated here, never accepted from the client — this is the
     // unguessable token printed on the sticker, deliberately decoupled from
