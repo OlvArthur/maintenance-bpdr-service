@@ -1,8 +1,8 @@
 import { PartEntity } from '@modules/parts/entities/Part'
-import { IFindOnePartRepository, IUpdatePartStockRepository, IListPartsRepository } from '@modules/parts/repositories'
+import { IFindOnePartRepository, IUpdatePartStockRepository, IListPartsRepository, ICreatePartRepository, ICreatePartRequestDTO } from '@modules/parts/repositories'
 import { PrismaContext, prisma as prismaClient } from '@shared/infra/prisma/ClientInstance'
 
-export class PartsRepository implements IFindOnePartRepository, IUpdatePartStockRepository, IListPartsRepository {
+export class PartsRepository implements IFindOnePartRepository, IUpdatePartStockRepository, IListPartsRepository, ICreatePartRepository {
     prismaContext: PrismaContext
 
     constructor(ctx?: PrismaContext) {
@@ -42,5 +42,35 @@ export class PartsRepository implements IFindOnePartRepository, IUpdatePartStock
         const parts = await prisma.part.findMany()
 
         return parts
+    }
+
+    async create(data: ICreatePartRequestDTO): Promise<PartEntity> {
+        const { client: prisma } = this.prismaContext
+        const { location, minThreshold, name, quantityOnHand, sku, unit } = data
+
+        const createdPart = await prisma.part.create({
+            data: {
+                location,
+                minThreshold,
+                name,
+                quantityOnHand,
+                sku,
+                unit
+            }
+        })
+
+        return createdPart
+    }
+
+    async findBySku(sku: string): Promise<PartEntity | null> {
+        const { client: prisma } = this.prismaContext
+        
+        const foundPart = await prisma.part.findUnique({
+            where: {
+                sku
+            }
+        })
+
+        return foundPart
     }
 }
