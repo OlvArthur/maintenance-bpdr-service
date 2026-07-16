@@ -20,8 +20,15 @@ export class MaintenanceLogsRepository implements IGetMachineMaintenanceLogsRepo
                 technicianId,
                 type,
                 machineId,
+                partsUsed: {
+                    create: partsUsed
+                }
             },
         })
+        
+
+
+        return log
 
     }
 
@@ -36,6 +43,7 @@ export class MaintenanceLogsRepository implements IGetMachineMaintenanceLogsRepo
                 machine: true
             }
         })
+
 
         return logs
     }

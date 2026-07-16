@@ -1,18 +1,38 @@
 import { Router } from 'express'
 
-import { getMachineMaintenanceLogsFactory } from '@modules/maintenance-logs/factory'
+import { getMachineMaintenanceLogsFactory, createMachineMaintenanceLogFactory } from '@modules/maintenance-logs/factory'
 import { adaptExpressRouter } from '@shared/infra/express/adapters'
 import { celebrate, Joi, Segments } from 'celebrate'
 
-export const machineMaintenanceLogsRouters = Router()
+export const machineMaintenanceLogsRouters = Router({ mergeParams: true })
 
 machineMaintenanceLogsRouters.get(
-    '/:machineId/logs',
+    '/',
     celebrate({
         [Segments.PARAMS]: Joi.object().keys({
-            machineId: Joi.string().required()
+            machineId: Joi.number().required()
         })
     }),
     adaptExpressRouter(getMachineMaintenanceLogsFactory())
+)
+
+machineMaintenanceLogsRouters.post(
+    '/',
+    celebrate({
+        [Segments.PARAMS]: Joi.object().keys({
+            machineId: Joi.number().required()
+        }),
+        [Segments.BODY]: Joi.object().keys({
+            type: Joi.string().required(),
+            description: Joi.string().required(),
+            partsUsed: Joi.array().items(
+                Joi.object().keys({
+                    partId: Joi.number().required(),
+                    quantityUsed: Joi.number().required()
+                })
+            )
+        })
+    }),
+    adaptExpressRouter(createMachineMaintenanceLogFactory())
 )
 
