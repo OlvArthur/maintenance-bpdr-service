@@ -1,8 +1,8 @@
-import { PartEntity } from "@modules/parts/entities/Part";
-import { IFindOnePartRepository, IUpdatePartStockRepository } from "@modules/parts/repositories";
-import { PrismaContext, prisma as prismaClient } from "@shared/infra/prisma/ClientInstance";
+import { PartEntity } from '@modules/parts/entities/Part'
+import { IFindOnePartRepository, IUpdatePartStockRepository, IListPartsRepository } from '@modules/parts/repositories'
+import { PrismaContext, prisma as prismaClient } from '@shared/infra/prisma/ClientInstance'
 
-export class PartsRepository implements IFindOnePartRepository, IUpdatePartStockRepository {
+export class PartsRepository implements IFindOnePartRepository, IUpdatePartStockRepository, IListPartsRepository {
     prismaContext: PrismaContext
 
     constructor(ctx?: PrismaContext) {
@@ -34,5 +34,13 @@ export class PartsRepository implements IFindOnePartRepository, IUpdatePartStock
                 }
             }
         })
+    }
+
+    async get(): Promise<PartEntity[]> {
+        const { client: prisma } = this.prismaContext
+
+        const parts = await prisma.part.findMany()
+
+        return parts
     }
 }
