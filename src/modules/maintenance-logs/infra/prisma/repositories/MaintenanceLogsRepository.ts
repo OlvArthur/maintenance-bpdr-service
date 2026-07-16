@@ -2,17 +2,17 @@ import { MaintenanceLogEntity } from '@modules/maintenance-logs/entities/Mainten
 import { ICloseMaintenanceLogRepository, IFindOneMaintenanceLogRepository } from '@modules/maintenance-logs/repositories'
 import { ICreateMachineMaintenanceLogRepository, ICreateMachineMaintenanceLogRequestDTO } from '@modules/maintenance-logs/repositories/ICreateMachineMaintenanceLogRepository'
 import { IGetMachineMaintenanceLogsRepository } from '@modules/maintenance-logs/repositories/IGetMachineMaintenanceLogsRepository'
-import { Context, prisma as prismaClient } from '@shared/infra/prisma/ClientInstance'
+import { PrismaContext, prisma as prismaClient } from '@shared/infra/prisma/ClientInstance'
 
 export class MaintenanceLogsRepository implements IGetMachineMaintenanceLogsRepository, ICreateMachineMaintenanceLogRepository, IFindOneMaintenanceLogRepository, ICloseMaintenanceLogRepository {
-    prismaContext: Context
+    prismaContext: PrismaContext
 
-    constructor(ctx?: Context) {
-        this.prismaContext = ctx ?? { prisma: prismaClient }
+    constructor(ctx?: PrismaContext) {
+        this.prismaContext = ctx ?? { client: prismaClient }
     }
 
     async createMachineMaintenanceLog(data: ICreateMachineMaintenanceLogRequestDTO): Promise<MaintenanceLogEntity> {
-        const { prisma } = this.prismaContext
+        const { client: prisma } = this.prismaContext
         const { description, machineId, partsUsed, technicianId, type } = data
 
         const log = await prisma.maintenanceLog.create({
@@ -34,7 +34,7 @@ export class MaintenanceLogsRepository implements IGetMachineMaintenanceLogsRepo
     }
 
     async getMachineMaintenanceLogs(machineId: number): Promise<MaintenanceLogEntity[]> {
-        const { prisma } = this.prismaContext
+        const { client: prisma } = this.prismaContext
 
         const logs = await prisma.maintenanceLog.findMany({
             where: {
@@ -50,7 +50,7 @@ export class MaintenanceLogsRepository implements IGetMachineMaintenanceLogsRepo
     }
 
     async findById(id: number): Promise<MaintenanceLogEntity | null> {
-        const { prisma } = this.prismaContext
+        const { client: prisma } = this.prismaContext
 
         const foundLog = await prisma.maintenanceLog.findUnique({
             where: { id }
@@ -60,7 +60,7 @@ export class MaintenanceLogsRepository implements IGetMachineMaintenanceLogsRepo
     }
 
     async close(id: number): Promise<MaintenanceLogEntity> {
-    const { prisma } = this.prismaContext
+    const { client: prisma } = this.prismaContext
 
     const closedLog = await prisma.maintenanceLog.update({
       where: { id },

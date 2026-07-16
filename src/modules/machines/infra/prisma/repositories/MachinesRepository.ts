@@ -2,17 +2,17 @@ import { UUID } from "node:crypto"
 
 import { MachineEntity } from "@modules/machines/entities/Machine"
 import { IFindOneMachineRepository, ICreateMachineRepository, ICreateMachineRequestDTO } from "@modules/machines/repositories"
-import { Context, prisma as prismaClient } from "@shared/infra/prisma/ClientInstance"
+import { PrismaContext, prisma as prismaClient } from "@shared/infra/prisma/ClientInstance"
 
 export class MachinesRepository implements IFindOneMachineRepository, ICreateMachineRepository {
-  prismaContext: Context
+  prismaContext: PrismaContext
 
-  constructor(ctx?: Context) {
-    this.prismaContext = ctx ?? { prisma: prismaClient }
+  constructor(ctx?: PrismaContext) {
+    this.prismaContext = ctx ?? { client: prismaClient }
   }
 
   async findBySerialNumber(serialNumber: string): Promise<MachineEntity | null> {
-    const { prisma } = this.prismaContext
+    const { client: prisma  } = this.prismaContext
 
     const foundMachine = await prisma.machine.findUnique({
       where: {
@@ -24,7 +24,7 @@ export class MachinesRepository implements IFindOneMachineRepository, ICreateMac
   }
 
   async findById(id: number): Promise<MachineEntity | null> {
-    const { prisma } = this.prismaContext
+    const { client: prisma } = this.prismaContext
 
     const foundMachine = await prisma.machine.findUnique({
       where: {
@@ -36,7 +36,7 @@ export class MachinesRepository implements IFindOneMachineRepository, ICreateMac
   }
 
   async findByQrCode(qrCode: UUID): Promise<MachineEntity | null> {
-    const { prisma } = this.prismaContext
+    const { client: prisma } = this.prismaContext
 
     const foundMachine = await prisma.machine.findUnique({
       where: {
@@ -48,7 +48,7 @@ export class MachinesRepository implements IFindOneMachineRepository, ICreateMac
   }
 
   async create(data: ICreateMachineRequestDTO): Promise<MachineEntity> {
-    const { prisma } = this.prismaContext
+    const { client: prisma } = this.prismaContext
     const { qrCode, name, type, location, serialNumber } = data
 
     const createdMachine = await prisma.machine.create({
