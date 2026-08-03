@@ -5,7 +5,7 @@ import { PartsRepository } from '@modules/parts/infra/prisma/repositories/PartsR
 import { PrismaTransactionProvider } from '@shared/providers/TransactionProvider/implementations/PrismaTransactionProvider'
 
 export const createMachineMaintenanceLogFactory = () => {
-    const transactionProvider = new PrismaTransactionProvider
+    const transactionProvider = new PrismaTransactionProvider()
     const service = new CreateMachineMaintenanceLogService(
         transactionProvider,
         (ctx) => new MaintenanceLogsRepository(ctx),

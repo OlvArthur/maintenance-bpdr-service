@@ -1,5 +1,6 @@
-import { listPartsFactory, findLowStockFactory } from '@modules/parts/factory'
+import { listPartsFactory, findLowStockFactory, createPartFactory } from '@modules/parts/factory'
 import { adaptExpressRouter } from '@shared/infra/express/adapters'
+import { celebrate, Joi, Segments } from 'celebrate'
 import { Router } from 'express'
 
 export const partsRouters = Router()
@@ -12,4 +13,19 @@ partsRouters.get(
 partsRouters.get(
     '/low-stock',
     adaptExpressRouter(findLowStockFactory())
+)
+
+partsRouters.post(
+    '/',
+    celebrate({
+        [Segments.BODY]: Joi.object().keys({
+            location: Joi.string().required(),
+            minThreshold: Joi.string().required(),
+            name: Joi.string().required(),
+            quantityOnHand: Joi.string().required(),
+            sku: Joi.string().required(),
+            unit: Joi.string().required()
+        })
+    }),
+    adaptExpressRouter(createPartFactory())
 )

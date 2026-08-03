@@ -1,8 +1,8 @@
-import { AppError } from "@shared/errors";
-import { PartEntity } from "../entities/Part";
-import { ICreatePartRepository, ICreatePartRequestDTO, IFindOnePartRepository } from "../repositories";
-import { ICreatePartService } from "./interfaces/ICreatePartService";
-import { StatusCode } from "@shared/commons";
+import { AppError } from '@shared/errors'
+import { PartEntity } from '@modules/parts/entities/Part'
+import { ICreatePartRepository, ICreatePartRequestDTO, IFindOnePartRepository } from '../repositories'
+import { ICreatePartService } from './interfaces/ICreatePartService'
+import { StatusCode } from '@shared/commons'
 
 export class CreatePartService implements ICreatePartService {
     constructor(private partsRepository: ICreatePartRepository & IFindOnePartRepository) {}
@@ -19,6 +19,15 @@ export class CreatePartService implements ICreatePartService {
 
         if(partAlreadyExists) throw new AppError('Create part service: A part with this sku already exists', StatusCode.CONFLICT)
 
-        
+        const createdPart = await this.partsRepository.create({
+            location,
+            minThreshold,
+            name,
+            quantityOnHand,
+            sku,
+            unit
+        })
+
+        return createdPart
     }
 }
