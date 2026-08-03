@@ -1,4 +1,4 @@
-import { listPartsFactory, findLowStockFactory, createPartFactory } from '@modules/parts/factory'
+import { listPartsFactory, findLowStockFactory, createPartFactory, restockFactory } from '@modules/parts/factory'
 import { adaptExpressRouter } from '@shared/infra/express/adapters'
 import { celebrate, Joi, Segments } from 'celebrate'
 import { Router } from 'express'
@@ -28,4 +28,17 @@ partsRouters.post(
         })
     }),
     adaptExpressRouter(createPartFactory())
+)
+
+partsRouters.patch(
+    '/:partId',
+    celebrate({
+        [Segments.PARAMS]: Joi.object().keys({
+            partId: Joi.number().required()
+        }),
+        [Segments.BODY]: Joi.object().keys({
+            quantityToAdd: Joi.number().required()
+        })
+    }),
+    adaptExpressRouter(restockFactory())
 )

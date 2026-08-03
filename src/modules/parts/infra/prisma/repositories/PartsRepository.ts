@@ -36,6 +36,21 @@ export class PartsRepository implements IFindOnePartRepository, IUpdatePartStock
         })
     }
 
+    async restock(partId: number, quantityToAdd: number): Promise<void> {
+        const { client: prisma } = this.prismaContext
+
+        await prisma.part.update({
+            where: {
+                id: partId
+            },
+            data: {
+                quantityOnHand: {
+                    increment: quantityToAdd
+                }
+            }
+        })
+    }
+
     async get(): Promise<PartEntity[]> {
         const { client: prisma } = this.prismaContext
 
