@@ -20,9 +20,9 @@ partsRouters.post(
     celebrate({
         [Segments.BODY]: Joi.object().keys({
             location: Joi.string().required(),
-            minThreshold: Joi.string().required(),
+            minThreshold: Joi.number().required(),
             name: Joi.string().required(),
-            quantityOnHand: Joi.string().required(),
+            quantityOnHand: Joi.number().required(),
             sku: Joi.string().required(),
             unit: Joi.string().required()
         })

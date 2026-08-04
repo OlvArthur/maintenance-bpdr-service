@@ -10,7 +10,7 @@ export class GetMachineMaintenanceLogsController implements BaseController {
     async handle(httpRequest: HttpRequest): Promise<HttpResponse> {
         const { machineId } = httpRequest.params
 
-        const logs: MaintenanceLogEntity[] = await this.getMachineMaintenanceLogsService.execute(machineId)
+        const logs: MaintenanceLogEntity[] = await this.getMachineMaintenanceLogsService.execute(Number(machineId))
 
         return success(logs)
     }

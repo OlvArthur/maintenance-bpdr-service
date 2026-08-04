@@ -10,11 +10,11 @@ export class CreateMachineMaintenanceLogController implements BaseController {
     async handle(httpRequest: HttpRequest): Promise<HttpResponse> {
         const { description, partsUsed, type } = httpRequest.body
         const { machineId } = httpRequest.params
-        const technicianId = 2
+        const technicianId = 2 // TODO
 
         const createdLog: MaintenanceLogEntity = await this.createMachineMaintenanceLogService.execute({
             description,
-            machineId,
+            machineId: Number(machineId),
             partsUsed,
             technicianId,
             type

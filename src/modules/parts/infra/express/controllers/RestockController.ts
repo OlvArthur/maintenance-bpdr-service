@@ -10,7 +10,7 @@ export class RestockController implements BaseController {
         const { partId } = httpRequest.params
         const { quantityToAdd } = httpRequest.body
 
-        await this.restockService.execute(partId, quantityToAdd)
+        await this.restockService.execute(Number(partId), Number(quantityToAdd))
 
         return success({})
     }

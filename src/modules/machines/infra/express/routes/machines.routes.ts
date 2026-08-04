@@ -26,7 +26,7 @@ machinesRouters.get(
   '/:id',
   celebrate({
     [Segments.PARAMS]: Joi.object().keys({
-      id: Joi.string().required()
+      id: Joi.number().required()
     })
   }),
   adaptExpressRouter(findMachineByIdFactory())

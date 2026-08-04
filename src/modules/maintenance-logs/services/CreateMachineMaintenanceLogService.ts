@@ -14,10 +14,9 @@ export class CreateMachineMaintenanceLogService<TClient> implements ICreateMachi
         private makePartsRepository: (context: RepositoryContext<TClient>) => IFindOnePartRepository & IUpdatePartStockRepository
     ) {}
 
-    async execute({ description, machineId, partsUsed, technicianId, type }: ICreateMachineMaintenanceLogRequestDTO): Promise<MaintenanceLogEntity> {
+    async execute({ description, machineId, partsUsed = [], technicianId, type }: ICreateMachineMaintenanceLogRequestDTO): Promise<MaintenanceLogEntity> {
         if(!description) throw new AppError('Create machine maintenance log service: Missing log description')
         if(!machineId) throw new AppError('Create machine maintenance log service: Missing log machineId')
-        if(!partsUsed) throw new AppError('Create machine maintenance log service: Missing log partsUsed')
         if(!technicianId) throw new AppError('Create machine maintenance log service: Missing log technicianId')
         if(!type) throw new AppError('Create machine maintenance log service: Missing log type')
 

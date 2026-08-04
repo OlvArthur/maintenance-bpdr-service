@@ -9,11 +9,12 @@ export class CreatePartService implements ICreatePartService {
 
     async execute({ location, minThreshold, name, quantityOnHand, sku, unit }: ICreatePartRequestDTO): Promise<PartEntity> {
         if(!location) throw new AppError('Create part service: Missing location')
-        if(!minThreshold) throw new AppError('Create part service: Missing minThreshold')
         if(!name) throw new AppError('Create part service: Missing name')
-        if(!quantityOnHand) throw new AppError('Create part service: Missing quantityOnHand')
         if(!sku) throw new AppError('Create part service: Missing sku')
         if(!unit) throw new AppError('Create part service: Missing unit')
+
+        if(typeof minThreshold !== 'number') throw new AppError('Create part service: Missing minThreshold')
+        if(typeof quantityOnHand !== 'number') throw new AppError('Create part service: Missing quantityOnHand')
 
         const partAlreadyExists = await this.partsRepository.findBySku(sku)
 
