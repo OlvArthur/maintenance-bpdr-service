@@ -1,4 +1,10 @@
-import { MaintenanceLog, MaintenanceLogStatus, MaintenanceType } from '../../../../prisma/client'
+import { MaintenanceLog, MaintenanceLogStatus } from '../../../../prisma/client'
+
+export enum MaintenanceType {
+    PREVENTIVE = 'PREVENTIVE',
+    CORRECTIVE = 'CORRECTIVE',
+    INSPECTION = 'INSPECTION'
+} 
 
 export class MaintenanceLogEntity implements MaintenanceLog {
     constructor(partial: Partial<MaintenanceLogEntity>) {

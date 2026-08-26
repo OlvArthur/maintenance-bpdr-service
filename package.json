@@ -18,6 +18,7 @@
     "express": "^5.2.1"
   },
   "scripts": {
-    "dev": "tsx watch src/shared/infra/express/server.ts"
+    "dev": "tsx watch src/shared/infra/express/server.ts",
+    "seed": "tsx prisma/seed.ts"
   }
 }

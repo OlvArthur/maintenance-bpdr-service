@@ -1,8 +1,11 @@
 import { Router } from 'express'
+import { celebrate, Joi, Segments } from 'celebrate'
 
 import { getMachineMaintenanceLogsFactory, createMachineMaintenanceLogFactory } from '@modules/maintenance-logs/factory'
 import { adaptExpressRouter } from '@shared/infra/express/adapters'
-import { celebrate, Joi, Segments } from 'celebrate'
+import { extractHeaders } from '@shared/infra/express/middlewares/HeadersExtractionMiddleware'
+import { MaintenanceType } from '@modules/maintenance-logs/entities/MaintenanceLog'
+
 
 export const machineMaintenanceLogsRouters = Router({ mergeParams: true })
 
@@ -23,7 +26,7 @@ machineMaintenanceLogsRouters.post(
             machineId: Joi.number().required()
         }),
         [Segments.BODY]: Joi.object().keys({
-            type: Joi.string().required(),
+            type: Joi.string().valid(...Object.values(MaintenanceType)).required(),
             description: Joi.string().required(),
             partsUsed: Joi.array().items(
                 Joi.object().keys({
@@ -33,6 +36,7 @@ machineMaintenanceLogsRouters.post(
             )
         })
     }),
+    extractHeaders,
     adaptExpressRouter(createMachineMaintenanceLogFactory())
 )
 
