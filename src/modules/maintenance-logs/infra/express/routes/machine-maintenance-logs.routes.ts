@@ -3,7 +3,6 @@ import { celebrate, Joi, Segments } from 'celebrate'
 
 import { getMachineMaintenanceLogsFactory, createMachineMaintenanceLogFactory } from '@modules/maintenance-logs/factory'
 import { adaptExpressRouter } from '@shared/infra/express/adapters'
-import { extractHeaders } from '@shared/infra/express/middlewares/HeadersExtractionMiddleware'
 import { MaintenanceType } from '@modules/maintenance-logs/entities/MaintenanceLog'
 
 
@@ -36,7 +35,6 @@ machineMaintenanceLogsRouters.post(
             )
         })
     }),
-    extractHeaders,
     adaptExpressRouter(createMachineMaintenanceLogFactory())
 )
 
